@@ -32,25 +32,25 @@ func readFile(filename string) (string, error) {
 }
 
 func generateFormattedOutput(diffs []diffmatchpatch.Diff) FormattedOutput {
-	var refText, outText string
-	for _, diff := range diffs {
-		switch diff.Type {
-		case diffmatchpatch.DiffInsert:
-			outText += fmt.Sprintf("\033[32m%s\033[0m", diff.Text)
-			refText += strings.Repeat(" ", len(diff.Text))
-		case diffmatchpatch.DiffDelete:
-			refText += fmt.Sprintf("\033[31m%s\033[0m", diff.Text)
-			outText += strings.Repeat(" ", len(diff.Text))
-		case diffmatchpatch.DiffEqual:
-			refText += diff.Text
-			outText += diff.Text
-		}
-	}
+    var refText, outText string
+    for _, diff := range diffs {
+        switch diff.Type {
+        case diffmatchpatch.DiffInsert:
+            outText += fmt.Sprintf("\033[42m%s\033[0m", diff.Text) // Green background
+            //refText += fmt.Sprintf("\033[41m%s\033[0m", strings.Repeat(" ", len(diff.Text))) // Red background for spaces
+        case diffmatchpatch.DiffDelete:
+            refText += fmt.Sprintf("\033[41m%s\033[0m", diff.Text) // Red background
+            //outText += fmt.Sprintf("\033[42m%s\033[0m", strings.Repeat(" ", len(diff.Text))) // Green background for spaces
+        case diffmatchpatch.DiffEqual:
+            refText += diff.Text
+            outText += diff.Text
+        }
+    }
 
-	return FormattedOutput{
-		reference: strings.Split(refText, "\n"),
-		output:    strings.Split(outText, "\n"),
-	}
+    return FormattedOutput{
+        reference: strings.Split(refText, "\n"),
+        output:    strings.Split(outText, "\n"),
+    }
 }
 
 func compareFilesInFolders(folder1, folder2 string, numFiles int) (int, map[string]FileCompareResult, error) {
